@@ -1,0 +1,88 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ Assembly Name="EnvDTE" #>
+<#@ Assembly Name="EnvDTE80" #>
+<#@ Assembly Name="Microsoft.Build" #>
+<#@ Assembly Name="Microsoft.CSharp" #>
+<#@ Assembly Name="Microsoft.VisualStudio.TextManager.Interop" #>
+<#@ Assembly Name="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0" #>
+<#@ Assembly Name="System" #>
+<#@ Assembly Name="System.ComponentModel.DataAnnotations" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Design" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ Assembly Name="System.Xml" #>
+<#@ Assembly Name="System.Xml.Linq" #>
+<#@ Assembly Name="VSLangProj110" #>
+
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="EnvDTE80" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Threading.Tasks" #>
+<#@ import namespace="VSLangProj110" #>
+
+<#@ include file="..\Gomo.CC.Common\T4\VSHelper.t4" #>
+<#@ output extension=".cs" #>
+
+<#
+	string strnamespace="Gomo.CC.IBLL";
+	//主模型的專案名稱
+	string modelprjname="Gomo.CC.Model";
+    VShelper vshelper = new VShelper(this.Host);
+	IEnumerable<EnvDTE.Project> lstprj=vshelper.GetAllProjectsRecursiveFromSolution(vshelper.DTE);
+
+    EnvDTE.Project modelprj=null;
+	foreach (var item in lstprj)
+    {
+		if(item.Name.Contains(modelprjname))
+        {
+			modelprj=item;
+		    //WriteLine(item.Name);
+        }
+    }
+    //class 的頭文件
+	WriteLine(GomoClassHelper.Head(strnamespace));
+    List<EnvDTE.CodeClass> listclass=vshelper.GetClassesOf(modelprj);
+	
+    // parse the list of code objects from 
+	foreach(var cls in listclass)
+	{
+		
+		if(cls.Name.Contains("Context")==true) continue;
+		//WriteLine("class : " + cls.Name);
+        StringBuilder sb= new StringBuilder();
+    	sb.Append("	public partial interface ");
+		sb.Append("I"+cls.Name+"Service:");
+		sb.AppendLine("IBaseService<"+cls.Name+">");
+		sb.AppendLine("	{");
+		sb.AppendLine("	}");
+		WriteLine(sb.ToString());
+	}
+	//write foot
+	WriteLine(GomoClassHelper.foot());
+#>
+
+<#+
+public static class GomoClassHelper
+{
+	public static string Head(string _namspace)
+    {
+		StringBuilder sb= new StringBuilder();
+		sb.AppendLine("using Gomo.CC.Model;");
+		sb.AppendLine("namespace "+_namspace);
+		sb.AppendLine("{");
+		return sb.ToString();
+    }
+	public static string foot()
+    {
+		StringBuilder sb= new StringBuilder();
+		sb.AppendLine("}");
+		return sb.ToString();
+    }
+}
+#>
+

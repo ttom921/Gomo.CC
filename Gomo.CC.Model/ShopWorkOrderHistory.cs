@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Gomo.CC.Model
+{
+    public partial class ShopWorkOrderHistory
+    {
+        public int Id { get; set; }
+        public int? RepairShopInfoId { get; set; }
+        public string WorkOrderNumber { get; set; }
+        public string LicensePlateNumber { get; set; }
+        public string Driver { get; set; }
+        public string Telphone { get; set; }
+        public string Cellphone { get; set; }
+        public string CarInformation { get; set; }
+        public string Color { get; set; }
+        public string ConsumerImgUrl { get; set; }
+        public bool? Maintenance { get; set; }
+        public bool? Overhaul { get; set; }
+        public bool? Insurance { get; set; }
+        public bool? Claim { get; set; }
+        public bool? Pdi { get; set; }
+        public bool? Courtesy { get; set; }
+        public bool? Towing { get; set; }
+        public string CourtesyLicenseplateNumber { get; set; }
+        public string Technician { get; set; }
+        public string Staff { get; set; }
+        public string WorkPurpose { get; set; }
+        public string Wpddescription { get; set; }
+        public string MaintenanceAdvice { get; set; }
+        public DateTime? NextMaintenanceDate { get; set; }
+        public DateTime? DateIn { get; set; }
+        public string MileageIn { get; set; }
+        public DateTime? DateOut { get; set; }
+        public string MileageOut { get; set; }
+        public string PlannedHours { get; set; }
+        public string RealHours { get; set; }
+        public string TotalBeforeTax { get; set; }
+        public string DiscountAgain { get; set; }
+        public string Tax { get; set; }
+        public string Total { get; set; }
+        public int? Year { get; set; }
+        public int? Month { get; set; }
+    }
+}

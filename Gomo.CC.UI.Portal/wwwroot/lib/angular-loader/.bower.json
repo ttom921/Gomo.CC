@@ -1,0 +1,21 @@
+{
+  "name": "angular-loader",
+  "version": "1.6.7-build.5496+sha.181ac0b",
+  "license": "MIT",
+  "main": "./angular-loader.js",
+  "ignore": [],
+  "dependencies": {
+    "angular": "1.6.7-build.5496+sha.181ac0b"
+  },
+  "homepage": "https://github.com/angular/bower-angular-loader",
+  "_release": "1.6.7-build.5496+sha.181ac0b",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.6.7-build.5496+sha.181ac0b",
+    "commit": "1bc12418427308461f5d13cf1d4f327267cf666d"
+  },
+  "_source": "https://github.com/angular/bower-angular-loader.git",
+  "_target": "v1.6.7-build.5496+sha.181ac0b",
+  "_originalSource": "angular-loader",
+  "_direct": true
+}

@@ -1,0 +1,21 @@
+{
+  "name": "angular-touch",
+  "version": "1.6.7-build.5496+sha.181ac0b",
+  "license": "MIT",
+  "main": "./angular-touch.js",
+  "ignore": [],
+  "dependencies": {
+    "angular": "1.6.7-build.5496+sha.181ac0b"
+  },
+  "homepage": "https://github.com/angular/bower-angular-touch",
+  "_release": "1.6.7-build.5496+sha.181ac0b",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.6.7-build.5496+sha.181ac0b",
+    "commit": "3e2a0bdbc0591910a95be7e54b380749bfe1595c"
+  },
+  "_source": "https://github.com/angular/bower-angular-touch.git",
+  "_target": "v1.6.7-build.5496+sha.181ac0b",
+  "_originalSource": "angular-touch",
+  "_direct": true
+}
