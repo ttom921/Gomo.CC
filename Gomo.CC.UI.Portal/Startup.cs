@@ -59,7 +59,7 @@ namespace Gomo.CC.UI.Portal
             SetUpHangfire(services);
             services.AddMvc();
             //連結資料庫
-            services.AddDbContext<BloggingContext>(options =>
+            services.AddDbContext<GomoCCDBContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("GomoLocalDatabase")));
             // services.AddDbContext<BloggingContext>(options =>
             //options.UseSqlServer(Configuration.GetConnectionString("myHome")));
