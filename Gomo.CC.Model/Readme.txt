@@ -26,3 +26,10 @@ Scaffold-DbContext -Connection "Server=192.168.2.150;Database=Gomo.CCDb;User ID=
         { }
 3.處理下列的問題
   JsonObject 轉換成 JsonObject<string>
+
+//安裝log元件
+https://github.com/serilog/serilog-aspnetcore
+Install-Package Serilog.AspNetCore -DependencyVersion Highest
+Install-Package Serilog.Sinks.Console
+https://github.com/bedegaming/sinks-rollingfile
+Install-Package Serilog.Sinks.RollingFileAlternate

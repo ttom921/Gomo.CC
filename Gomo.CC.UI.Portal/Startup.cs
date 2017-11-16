@@ -15,14 +15,11 @@ using Gomo.CC.IBLL;
 using Gomo.CC.BLL;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using log4net.Repository;
-using log4net;
-using log4net.Config;
-using System.IO;
 using Hangfire;
 using Gomo.CC.DIModule;
 using Microsoft.AspNetCore.HttpOverrides;
 using Hangfire.MySql;
+using Serilog;
 using System.Transactions;
 
 namespace Gomo.CC.UI.Portal
@@ -30,28 +27,18 @@ namespace Gomo.CC.UI.Portal
     //Development Production
     public class Startup
     {
-        static ILoggerRepository Logrep { get; set; }
-        public ILog log;
+       
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            //設定log
-            SetUpLog();
-            
         }
-        //設定log
-        private void SetUpLog()
-        {
-            Logrep = LogManager.CreateRepository("NETCoreRepository");
-            XmlConfigurator.Configure(Logrep, new FileInfo("log4net.config"));
-            log = LogManager.GetLogger(Logrep.Name, typeof(Startup));
-        }
+       
         //設定hangfire
         void SetUpHangfire(IServiceCollection services)
         {
             string connstr = null;
             connstr = Configuration.GetConnectionString("HangfireConnection");
-            log.Info("設定Hangfire連線=" + connstr);
+            Log.Information("設定Hangfire連線=" + connstr);
             //Hangfire的參數設定
             MySqlStorageOptions mySqlStorageOptions = new MySqlStorageOptions
             {
@@ -81,7 +68,7 @@ namespace Gomo.CC.UI.Portal
             //options.UseSqlServer(Configuration.GetConnectionString("myHome")));
             string connstr = null;
             connstr = Configuration.GetConnectionString("GomoDatabase");
-            log.Info("設定資料庫連線="+connstr);
+            Log.Information("設定資料庫連線=" + connstr);
             services.AddDbContext<GomoCCDBContext>(options =>
                       options.UseMySql(connstr));
         }
@@ -90,7 +77,7 @@ namespace Gomo.CC.UI.Portal
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            log.Info("start ConfigureServices...");
+            Log.Information("start ConfigureServices.." );
             //Development Production
 
             // Add framework services.
@@ -120,7 +107,7 @@ namespace Gomo.CC.UI.Portal
             ApplicationContainer = builder.Build();
             // creating the IServiceProvider out of the Autofac container
             //return new AutofacServiceProvider(ApplicationContainer);
-            log.Info("Done ConfigureServices...");
+            Log.Information("Done ConfigureServices...");
             return ApplicationContainer.Resolve<IServiceProvider>();
             //
             //var builder = new ContainerBuilder();
@@ -134,7 +121,7 @@ namespace Gomo.CC.UI.Portal
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            log.Warn("Environment=" + env.EnvironmentName);
+            Log.Warning("Environment=" + env.EnvironmentName);
             //設定反向 Proxy 伺服器時，驗證中介軟體需要 UseForwardedHeaders 先執行
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

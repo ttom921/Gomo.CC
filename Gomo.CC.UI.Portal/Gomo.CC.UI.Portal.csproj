@@ -5,23 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="log4net.config" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="Hangfire" Version="1.6.17" />
     <PackageReference Include="Hangfire.MySqlStorage.NetCore" Version="1.0.3" />
-    <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.RollingFileAlternate" Version="2.0.9" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="log4net.config" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +26,10 @@
     <ProjectReference Include="..\Gomo.CC.IBLL\Gomo.CC.IBLL.csproj" />
     <ProjectReference Include="..\Gomo.CC.IDAL\Gomo.CC.IDAL.csproj" />
     <ProjectReference Include="..\Gomo.CC.Model\Gomo.CC.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Log_Data\" />
   </ItemGroup>
 
 </Project>
