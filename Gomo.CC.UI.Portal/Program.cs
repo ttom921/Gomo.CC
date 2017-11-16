@@ -23,7 +23,7 @@ namespace Gomo.CC.UI.Portal
                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                .Enrich.FromLogContext()
                .WriteTo.Console()
-               .WriteTo.RollingFileAlternate("Log_Data")
+               .WriteTo.RollingFileAlternate("Log_Data", LogEventLevel.Warning)
                .CreateLogger();
             #endregion
             try

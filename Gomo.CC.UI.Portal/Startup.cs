@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Hangfire.MySql;
 using Serilog;
 using System.Transactions;
+using AutofacSerilogIntegration;
 
 namespace Gomo.CC.UI.Portal
 {
@@ -103,6 +104,8 @@ namespace Gomo.CC.UI.Portal
             // use and configure Autofac
             builder.RegisterModule<DalModule>();
             builder.RegisterModule<ServiceModule>();
+            //注入Serilog
+            builder.RegisterLogger(autowireProperties: true);
             // build the Autofac container
             ApplicationContainer = builder.Build();
             // creating the IServiceProvider out of the Autofac container

@@ -8,6 +8,7 @@ using Gomo.CC.EFDAL;
 using Gomo.CC.Model;
 using Gomo.CC.IBLL;
 using Gomo.CC.Common;
+using Serilog;
 
 namespace Gomo.CC.UI.Portal.Controllers
 {
@@ -28,17 +29,22 @@ namespace Gomo.CC.UI.Portal.Controllers
         //}
         #endregion
         private readonly IUserInfoService _UserInfoService;
+        readonly ILogger _log;
 
-        public BlogsController(IUserInfoService userInfoService)
+        public BlogsController(IUserInfoService userInfoService, ILogger log)
         {
             _UserInfoService = userInfoService;
+            _log = log;
         }
         public IActionResult Index()
         {
-            LogHelper.WriteLog("BlogsController  log");
+            // LogHelper.WriteLog("BlogsController  log");
+            _log.Information("BlogsController  log");
             List<UserInfo> lst = _UserInfoService.GetEntities(u => true).ToList();
             return View(lst);
         }
 
     }
+
+    
 }
