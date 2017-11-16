@@ -21,32 +21,70 @@ using log4net.Config;
 using System.IO;
 using Hangfire;
 using Gomo.CC.DIModule;
+using Microsoft.AspNetCore.HttpOverrides;
+using Hangfire.MySql;
+using System.Transactions;
 
 namespace Gomo.CC.UI.Portal
 {
+    //Development Production
     public class Startup
     {
-        static ILoggerRepository logorep { get; set; }
+        static ILoggerRepository Logrep { get; set; }
         public ILog log;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
+            Console.WriteLine(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT "));
             //設定log
             SetUpLog();
+            
         }
         //設定log
         private void SetUpLog()
         {
-            logorep = LogManager.CreateRepository("NETCoreRepository");
-            XmlConfigurator.Configure(logorep, new FileInfo("log4net.config"));
-            log = LogManager.GetLogger(logorep.Name, typeof(Startup));
+            Logrep = LogManager.CreateRepository("NETCoreRepository");
+            XmlConfigurator.Configure(Logrep, new FileInfo("log4net.config"));
+            log = LogManager.GetLogger(Logrep.Name, typeof(Startup));
         }
         //設定hangfire
         void SetUpHangfire(IServiceCollection services)
         {
-            services.AddHangfire(config =>
-                config.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection")));
+            string connstr = null;
+            connstr = Configuration.GetConnectionString("HangfireConnection");
+            log.Info("設定Hangfire連線=" + connstr);
+            //Hangfire的參數設定
+            MySqlStorageOptions mySqlStorageOptions = new MySqlStorageOptions
+            {
+                TransactionIsolationLevel = IsolationLevel.ReadCommitted,
+                QueuePollInterval = TimeSpan.FromSeconds(15),
+                JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                PrepareSchemaIfNecessary = true,
+                DashboardJobListLimit = 50000,
+                TransactionTimeout = TimeSpan.FromMinutes(1),
+            };
+            //services.AddHangfire(options => options
+            //       .UseStorage(new MySqlStorage(connstr, mySqlStorageOptions))
+            //       .UseColouredConsoleLogProvider());
+            services.AddHangfire(options => options
+                  .UseStorage(new MySqlStorage(connstr, mySqlStorageOptions))
+                  );
+            //services.AddHangfire(config =>
+            //    config.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection")));
+        }
+        //設定資料庫
+        void SetUPDataBase(IServiceCollection services)
+        {
+            //services.AddDbContext<GomoCCDBContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("GomoLocalDatabase")));
+            // services.AddDbContext<BloggingContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("myHome")));
+            string connstr = null;
+            connstr = Configuration.GetConnectionString("GomoDatabase");
+            log.Info("設定資料庫連線="+connstr);
+            services.AddDbContext<GomoCCDBContext>(options =>
+                      options.UseMySql(connstr));
         }
         public IConfiguration Configuration { get; }
         public IContainer ApplicationContainer { get; private set; }
@@ -54,22 +92,15 @@ namespace Gomo.CC.UI.Portal
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             log.Info("start ConfigureServices...");
+            //Development Production
+
             // Add framework services.
             //加入handfire
             SetUpHangfire(services);
-            services.AddMvc();
             //連結資料庫
-            services.AddDbContext<GomoCCDBContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("GomoLocalDatabase")));
-            // services.AddDbContext<BloggingContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("myHome")));
-
-
-
-
-
-
-
+            SetUPDataBase(services);
+            //加入MVC的框架
+            services.AddMvc();
             //// create custom container
             //var container = new CustomContainer();
             //// read service collection to the custom container
@@ -104,9 +135,21 @@ namespace Gomo.CC.UI.Portal
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            log.Warn("Environment=" + env.EnvironmentName);
+            //設定反向 Proxy 伺服器時，驗證中介軟體需要 UseForwardedHeaders 先執行
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            //驗證配置中介軟體
+            //
             //使用Hangfire
+            app.UseHangfireServer(
+                new BackgroundJobServerOptions
+                {
+                    WorkerCount = 1//只准許一個instance
+                });
             app.UseHangfireDashboard();
-            app.UseHangfireServer();
             //起動shcedulejob
             Helpers.Hangfire.HangfireHelp.Instance.DelayScheculdeJob();
 
