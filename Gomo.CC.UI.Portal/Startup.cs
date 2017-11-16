@@ -35,7 +35,6 @@ namespace Gomo.CC.UI.Portal
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            Console.WriteLine(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT "));
             //設定log
             SetUpLog();
             
