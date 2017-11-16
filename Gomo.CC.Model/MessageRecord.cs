@@ -12,6 +12,6 @@ namespace Gomo.CC.Model
         public string MessageContent { get; set; }
         public int? MediaType { get; set; }
         public DateTime? RecordDate { get; set; }
-        public bool? Success { get; set; }
+        public sbyte? Success { get; set; }
     }
 }

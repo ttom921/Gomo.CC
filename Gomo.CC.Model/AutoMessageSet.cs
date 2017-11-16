@@ -10,11 +10,11 @@ namespace Gomo.CC.Model
         public int MessageType { get; set; }
         public string MessageContent { get; set; }
         public int ExpiredDays { get; set; }
-        public bool? MediaTypeSms { get; set; }
-        public bool? MediaTypeLine { get; set; }
-        public bool? MediaTypeMessenger { get; set; }
-        public bool? MediaTypeWechat { get; set; }
-        public bool? Status { get; set; }
+        public sbyte? MediaTypeSms { get; set; }
+        public sbyte? MediaTypeLine { get; set; }
+        public sbyte? MediaTypeMessenger { get; set; }
+        public sbyte? MediaTypeWechat { get; set; }
+        public sbyte? Status { get; set; }
 
         public AutoMessageType MessageTypeNavigation { get; set; }
     }

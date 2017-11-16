@@ -10,7 +10,7 @@ namespace Gomo.CC.Model
         public int? CaId { get; set; }
         public int? ConsumerType { get; set; }
         public string ConsumerName { get; set; }
-        public bool? Gender { get; set; }
+        public sbyte? Gender { get; set; }
         public DateTime? Birthday { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
@@ -23,12 +23,12 @@ namespace Gomo.CC.Model
         public string WechatId { get; set; }
         public string Sms { get; set; }
         public string Discount { get; set; }
-        public bool? PayTypeAccount { get; set; }
-        public bool? PayTypeCash { get; set; }
-        public bool? PayTypeCheck { get; set; }
-        public bool? PayTypeCredit { get; set; }
-        public bool? PayTypeDebit { get; set; }
-        public bool? PayTypeMasterCard { get; set; }
+        public sbyte? PayTypeAccount { get; set; }
+        public sbyte? PayTypeCash { get; set; }
+        public sbyte? PayTypeCheck { get; set; }
+        public sbyte? PayTypeCredit { get; set; }
+        public sbyte? PayTypeDebit { get; set; }
+        public sbyte? PayTypeMasterCard { get; set; }
         public string Referralentry { get; set; }
     }
 }

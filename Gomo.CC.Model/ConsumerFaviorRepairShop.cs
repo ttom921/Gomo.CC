@@ -8,7 +8,7 @@ namespace Gomo.CC.Model
         public int Id { get; set; }
         public int UserInfoId { get; set; }
         public int RepairShopInfoId { get; set; }
-        public bool? IsFavior { get; set; }
-        public bool? IsMember { get; set; }
+        public sbyte? IsFavior { get; set; }
+        public sbyte? IsMember { get; set; }
     }
 }

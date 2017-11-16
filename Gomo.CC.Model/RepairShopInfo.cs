@@ -19,7 +19,7 @@ namespace Gomo.CC.Model
         public string MaintenanceProject { get; set; }
         public string MaintenanceItems { get; set; }
         public string Email { get; set; }
-        public string GooglemapGeocoding { get; set; }
+        public JsonObject<string> GooglemapGeocoding { get; set; }
         public string GooglemapGeocodingIsDirty { get; set; }
     }
 }

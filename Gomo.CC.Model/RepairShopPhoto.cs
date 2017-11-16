@@ -8,6 +8,6 @@ namespace Gomo.CC.Model
         public int Id { get; set; }
         public int? RepairShopInfoId { get; set; }
         public string ServiceImgUrl { get; set; }
-        public bool? DeleteStatus { get; set; }
+        public sbyte? DeleteStatus { get; set; }
     }
 }

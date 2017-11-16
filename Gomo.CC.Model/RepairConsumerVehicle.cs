@@ -19,7 +19,7 @@ namespace Gomo.CC.Model
         public DateTime? DateOfManufcture { get; set; }
         public DateTime? InspectionDate { get; set; }
         public DateTime? InsuranceExpirationDate { get; set; }
-        public bool OnChange { get; set; }
+        public sbyte OnChange { get; set; }
 
         public RepairConsumerProfile Rcp { get; set; }
     }

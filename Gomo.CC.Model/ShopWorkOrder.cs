@@ -17,13 +17,13 @@ namespace Gomo.CC.Model
         public int? CaId { get; set; }
         public int? CvId { get; set; }
         public string WorkOrderNumber { get; set; }
-        public bool? Maintenance { get; set; }
-        public bool? Overhaul { get; set; }
-        public bool? Insurance { get; set; }
-        public bool? Claim { get; set; }
-        public bool? Pdi { get; set; }
-        public bool? Courtesy { get; set; }
-        public bool? Towing { get; set; }
+        public sbyte? Maintenance { get; set; }
+        public sbyte? Overhaul { get; set; }
+        public sbyte? Insurance { get; set; }
+        public sbyte? Claim { get; set; }
+        public sbyte? Pdi { get; set; }
+        public sbyte? Courtesy { get; set; }
+        public sbyte? Towing { get; set; }
         public string CourtesyLicenseplateNumber { get; set; }
         public int? TssaId { get; set; }
         public int? WssaId { get; set; }

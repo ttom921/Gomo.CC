@@ -7,8 +7,8 @@ namespace Gomo.CC.Model
     {
         public int Id { get; set; }
         public int MesTypeId { get; set; }
-        public bool IsRead { get; set; }
-        public bool IsSend { get; set; }
+        public sbyte IsRead { get; set; }
+        public sbyte IsSend { get; set; }
         public DateTime SubTime { get; set; }
         public int DestId { get; set; }
         public string Content { get; set; }

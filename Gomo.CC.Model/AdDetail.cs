@@ -11,6 +11,6 @@ namespace Gomo.CC.Model
         public DateTime? PlayStartDate { get; set; }
         public DateTime? PlayEndDate { get; set; }
         public string Url { get; set; }
-        public bool? IsOnline { get; set; }
+        public sbyte? IsOnline { get; set; }
     }
 }

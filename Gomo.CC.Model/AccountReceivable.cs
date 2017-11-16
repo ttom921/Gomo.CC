@@ -17,6 +17,6 @@ namespace Gomo.CC.Model
         public DateTime? PaymentDate { get; set; }
         public string Note { get; set; }
         public string Payer { get; set; }
-        public bool? Settle { get; set; }
+        public sbyte? Settle { get; set; }
     }
 }

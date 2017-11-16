@@ -10,7 +10,7 @@ namespace Gomo.CC.Model
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? TimeTern { get; set; }
-        public bool? Paid { get; set; }
+        public sbyte? Paid { get; set; }
         public int? DelFlag { get; set; }
     }
 }

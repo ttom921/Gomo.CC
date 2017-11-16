@@ -21,6 +21,7 @@ namespace Gomo.CC.Model
         public virtual DbSet<ConsumerFaviorRepairShop> ConsumerFaviorRepairShop { get; set; }
         public virtual DbSet<ConsumerProfile> ConsumerProfile { get; set; }
         public virtual DbSet<ConsumerVehicle> ConsumerVehicle { get; set; }
+        public virtual DbSet<CteCityOrderList> CteCityOrderList { get; set; }
         public virtual DbSet<Faqcategory> Faqcategory { get; set; }
         public virtual DbSet<Faqlist> Faqlist { get; set; }
         public virtual DbSet<ForumCategory> ForumCategory { get; set; }
@@ -111,6 +112,10 @@ namespace Gomo.CC.Model
         {
             modelBuilder.Entity<AccountPay>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Bank).HasMaxLength(50);
 
                 entity.Property(e => e.BankAccount).HasMaxLength(50);
@@ -121,39 +126,65 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.InvoiceNumber).HasMaxLength(50);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.PaymentMethod).HasColumnType("int(11)");
+
+                entity.Property(e => e.PaymentTerms).HasColumnType("int(11)");
+
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.SuppilerName).HasMaxLength(50);
 
-                entity.Property(e => e.Total).HasColumnType("nchar(10)");
+                entity.Property(e => e.Total).HasColumnType("char(10)");
             });
 
             modelBuilder.Entity<AccountReceivable>(entity =>
             {
-                entity.Property(e => e.Balance).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("decimal(18,0)");
 
                 entity.Property(e => e.Note).HasMaxLength(100);
 
-                entity.Property(e => e.Paid).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Paid).HasColumnType("decimal(18,0)");
 
                 entity.Property(e => e.Payer).HasMaxLength(50);
 
                 entity.Property(e => e.PaymentDate).HasColumnType("datetime");
 
+                entity.Property(e => e.PaymentMethod).HasColumnType("int(11)");
+
                 entity.Property(e => e.ReceivableDate).HasColumnType("datetime");
 
-                entity.Property(e => e.ShopWorkOrderHistoryId).HasColumnName("ShopWorkOrderHistory_Id");
+                entity.Property(e => e.Settle).HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.SubTotabl).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.ShopWorkOrderHistoryId)
+                    .HasColumnName("ShopWorkOrderHistory_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.Tax).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.SubTotabl).HasColumnType("decimal(18,0)");
 
-                entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Tax).HasColumnType("decimal(18,0)");
+
+                entity.Property(e => e.Total).HasColumnType("decimal(18,0)");
             });
 
             modelBuilder.Entity<AdDetail>(entity =>
             {
-                entity.Property(e => e.AdProfileId).HasColumnName("AdProfile_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AdProfileId)
+                    .HasColumnName("AdProfile_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.BannerType).HasColumnType("int(11)");
+
+                entity.Property(e => e.IsOnline).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.PlayEndDate).HasColumnType("datetime");
 
@@ -166,9 +197,13 @@ namespace Gomo.CC.Model
             {
                 entity.ToTable("ADManage");
 
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate)
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'");
 
                 entity.Property(e => e.Adname)
                     .IsRequired()
@@ -177,11 +212,13 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Adstatus)
                     .HasColumnName("ADStatus")
-                    .HasDefaultValueSql("((1))");
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Adtype)
                     .HasColumnName("ADType")
-                    .HasDefaultValueSql("((0))");
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Adurl)
                     .IsRequired()
@@ -190,85 +227,157 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.AiId)
                     .HasColumnName("AI_Id")
-                    .HasDefaultValueSql("((0))");
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'0'");
             });
 
             modelBuilder.Entity<AdProfile>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Paid).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.TimeTern).HasColumnType("int(11)");
+
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<AuthorityPoint>(entity =>
             {
-                entity.Property(e => e.AuthorityPoint1).HasColumnName("Authority_Point");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AuthorityPoint1)
+                    .HasColumnName("Authority_Point")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.UserInfoId).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<AuthorityPointLog>(entity =>
             {
-                entity.Property(e => e.AuthorityPoint).HasColumnName("Authority_Point");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AuthorityPoint)
+                    .HasColumnName("Authority_Point")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Description).HasMaxLength(128);
 
                 entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.ParentId).HasColumnType("int(11)");
+
+                entity.Property(e => e.UserInfoId).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<AutoMessageSet>(entity =>
             {
+                entity.HasIndex(e => e.MessageType)
+                    .HasName("MessageType");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ExpiredDays).HasColumnType("int(11)");
+
                 entity.Property(e => e.MediaTypeLine)
                     .HasColumnName("MediaType_Line")
-                    .HasDefaultValueSql("((0))");
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.MediaTypeMessenger)
                     .HasColumnName("MediaType_Messenger")
-                    .HasDefaultValueSql("((0))");
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.MediaTypeSms)
                     .HasColumnName("MediaType_SMS")
-                    .HasDefaultValueSql("((0))");
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.MediaTypeWechat)
                     .HasColumnName("MediaType_Wechat")
-                    .HasDefaultValueSql("((0))");
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.MessageContent).IsRequired();
+                entity.Property(e => e.MessageContent)
+                    .IsRequired()
+                    .HasColumnType("text");
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.MessageType).HasColumnType("int(11)");
 
-                entity.Property(e => e.Status).HasDefaultValueSql("((0))");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Status)
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("'0'");
 
                 entity.HasOne(d => d.MessageTypeNavigation)
                     .WithMany(p => p.AutoMessageSet)
                     .HasForeignKey(d => d.MessageType)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_AutoMessageSet_AutoMessageType");
+                    .HasConstraintName("AutoMessageSet_ibfk_1");
             });
 
             modelBuilder.Entity<AutoMessageType>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.MessageType).HasMaxLength(50);
             });
 
             modelBuilder.Entity<BestAnswerVote>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SsaId).HasColumnName("SSA_Id");
+                entity.Property(e => e.SsaId)
+                    .HasColumnName("SSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.TaqId).HasColumnName("TAQ_Id");
+                entity.Property(e => e.TaqId)
+                    .HasColumnName("TAQ_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.TarId).HasColumnName("TAR_Id");
+                entity.Property(e => e.TarId)
+                    .HasColumnName("TAR_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<BillsPayable>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AccountId)
                     .HasColumnName("Account_Id")
                     .HasMaxLength(50);
@@ -277,7 +386,9 @@ namespace Gomo.CC.Model
                     .HasColumnName("Account_Name")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.BillsAmount).HasColumnName("Bills_Amount");
+                entity.Property(e => e.BillsAmount)
+                    .HasColumnName("Bills_Amount")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.BillsId)
                     .HasColumnName("Bills_Id")
@@ -286,35 +397,64 @@ namespace Gomo.CC.Model
                 entity.Property(e => e.ExchangeDate)
                     .HasColumnName("Exchange_Date")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.Payable).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ConsumerAccount>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasIndex(e => e.RsaId)
+                    .HasName("RSA_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.ConsumerId)
                     .HasColumnName("ConsumerID")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.ErrorCnt).HasColumnType("int(11)");
+
                 entity.Property(e => e.Password).HasMaxLength(50);
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Status).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Rsa)
                     .WithMany(p => p.ConsumerAccount)
                     .HasForeignKey(d => d.RsaId)
-                    .HasConstraintName("FK_ConsumerAccount_RepairShopAccount");
+                    .HasConstraintName("ConsumerAccount_ibfk_1");
             });
 
             modelBuilder.Entity<ConsumerFaviorRepairShop>(entity =>
             {
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.IsFavior).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.IsMember).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ConsumerProfile>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Address1).HasMaxLength(50);
 
                 entity.Property(e => e.Address2).HasMaxLength(50);
@@ -323,11 +463,15 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Birthday).HasColumnType("datetime");
 
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Cellphone).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
+
+                entity.Property(e => e.ConsumerType).HasColumnType("int(11)");
 
                 entity.Property(e => e.Discount).HasMaxLength(50);
 
@@ -337,21 +481,35 @@ namespace Gomo.CC.Model
                     .HasColumnName("FBUrl")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Gender).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.LineId)
                     .HasColumnName("LineID")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.PayTypeAccount).HasColumnName("PayType_Account");
+                entity.Property(e => e.PayTypeAccount)
+                    .HasColumnName("PayType_Account")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeCash).HasColumnName("PayType_Cash");
+                entity.Property(e => e.PayTypeCash)
+                    .HasColumnName("PayType_Cash")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeCheck).HasColumnName("PayType_Check");
+                entity.Property(e => e.PayTypeCheck)
+                    .HasColumnName("PayType_Check")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeCredit).HasColumnName("PayType_Credit");
+                entity.Property(e => e.PayTypeCredit)
+                    .HasColumnName("PayType_Credit")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeDebit).HasColumnName("PayType_Debit");
+                entity.Property(e => e.PayTypeDebit)
+                    .HasColumnName("PayType_Debit")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeMasterCard).HasColumnName("PayType_MasterCard");
+                entity.Property(e => e.PayTypeMasterCard)
+                    .HasColumnName("PayType_MasterCard")
+                    .HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.Referralentry).HasMaxLength(50);
 
@@ -361,7 +519,9 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Telephone).HasMaxLength(50);
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.WechatId)
                     .HasColumnName("WechatID")
@@ -370,7 +530,13 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<ConsumerVehicle>(entity =>
             {
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Color).HasMaxLength(50);
 
@@ -388,20 +554,49 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.NextMaintainMileage).HasMaxLength(50);
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.VcId).HasColumnName("VC_Id");
+                entity.Property(e => e.VcId)
+                    .HasColumnName("VC_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.VmId).HasColumnName("VM_Id");
+                entity.Property(e => e.VmId)
+                    .HasColumnName("VM_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.VtId).HasColumnName("VT_Id");
+                entity.Property(e => e.VtId)
+                    .HasColumnName("VT_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Year).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<CteCityOrderList>(entity =>
+            {
+                entity.HasKey(e => e.Pk);
+
+                entity.ToTable("cteCityOrderList");
+
+                entity.Property(e => e.Pk)
+                    .HasColumnName("pk")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(200);
             });
 
             modelBuilder.Entity<Faqcategory>(entity =>
             {
                 entity.ToTable("FAQCategory");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.CategoryName).HasMaxLength(50);
             });
@@ -410,147 +605,256 @@ namespace Gomo.CC.Model
             {
                 entity.ToTable("FAQList");
 
+                entity.HasIndex(e => e.FaqcId)
+                    .HasName("FAQC_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Content).HasMaxLength(500);
 
-                entity.Property(e => e.FaqcId).HasColumnName("FAQC_Id");
+                entity.Property(e => e.FaqcId)
+                    .HasColumnName("FAQC_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Title).HasMaxLength(50);
 
                 entity.HasOne(d => d.Faqc)
                     .WithMany(p => p.Faqlist)
                     .HasForeignKey(d => d.FaqcId)
-                    .HasConstraintName("FK_FAQList_FAQCategory");
+                    .HasConstraintName("FAQList_ibfk_1");
             });
 
             modelBuilder.Entity<ForumCategory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.CategoryName).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ForumQuestion>(entity =>
             {
-                entity.Property(e => e.AccountId).HasColumnName("Account_Id");
+                entity.HasIndex(e => e.FcId)
+                    .HasName("FC_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AccountId)
+                    .HasColumnName("Account_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Content).HasMaxLength(50);
 
-                entity.Property(e => e.FcId).HasColumnName("FC_Id");
+                entity.Property(e => e.FcId)
+                    .HasColumnName("FC_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Role).HasColumnType("int(11)");
 
                 entity.Property(e => e.Title).HasMaxLength(50);
+
+                entity.Property(e => e.ViewCount).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Fc)
                     .WithMany(p => p.ForumQuestion)
                     .HasForeignKey(d => d.FcId)
-                    .HasConstraintName("FK_ForumQuestion_ForumCategory");
+                    .HasConstraintName("ForumQuestion_ibfk_1");
             });
 
             modelBuilder.Entity<ForumReply>(entity =>
             {
-                entity.Property(e => e.AccountId).HasColumnName("Account_Id");
+                entity.HasIndex(e => e.FqId)
+                    .HasName("FQ_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AccountId)
+                    .HasColumnName("Account_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Content).HasMaxLength(100);
 
-                entity.Property(e => e.FqId).HasColumnName("FQ_Id");
+                entity.Property(e => e.FqId)
+                    .HasColumnName("FQ_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Role).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Fq)
                     .WithMany(p => p.ForumReply)
                     .HasForeignKey(d => d.FqId)
-                    .HasConstraintName("FK_ForumReply_ForumQuestion");
+                    .HasConstraintName("ForumReply_ibfk_1");
             });
 
             modelBuilder.Entity<GoodsAnswer>(entity =>
             {
+                entity.HasIndex(e => e.GqId)
+                    .HasName("GQ_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Content).HasMaxLength(50);
 
-                entity.Property(e => e.GqId).HasColumnName("GQ_Id");
+                entity.Property(e => e.GqId)
+                    .HasColumnName("GQ_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Gq)
                     .WithMany(p => p.GoodsAnswer)
                     .HasForeignKey(d => d.GqId)
-                    .HasConstraintName("FK_GoodsAnswer_GoodsQuestion");
+                    .HasConstraintName("GoodsAnswer_ibfk_1");
             });
 
             modelBuilder.Entity<GoodsList>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
                 entity.Property(e => e.DealInformation).HasMaxLength(50);
 
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
                 entity.Property(e => e.GoodsDescription).HasMaxLength(50);
 
-                entity.Property(e => e.GoodsName).HasColumnType("nchar(20)");
+                entity.Property(e => e.GoodsName).HasColumnType("char(20)");
 
                 entity.Property(e => e.GoolsName).HasColumnType("datetime");
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
 
-                entity.Property(e => e.RsiId).HasColumnName("RSI_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.RsiId)
+                    .HasColumnName("RSI_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Status).HasColumnType("int(11)");
+
+                entity.Property(e => e.ViewCount).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<GoodsOrder>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Order).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.OrderDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Pay).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.PayDate).HasColumnType("datetime");
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Rules).HasMaxLength(50);
+
+                entity.Property(e => e.Ship).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.ShipDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<GoodsOrderRating>(entity =>
             {
+                entity.HasIndex(e => e.GlId)
+                    .HasName("GL_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
-                entity.Property(e => e.GlId).HasColumnName("GL_Id");
+                entity.Property(e => e.GlId)
+                    .HasColumnName("GL_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.GoId).HasColumnName("GO_Id");
+                entity.Property(e => e.GoId)
+                    .HasColumnName("Go_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.Rating).HasColumnType("nchar(10)");
+                entity.Property(e => e.Rating).HasColumnType("char(10)");
 
                 entity.HasOne(d => d.Gl)
                     .WithMany(p => p.GoodsOrderRating)
                     .HasForeignKey(d => d.GlId)
-                    .HasConstraintName("FK_GoodsOrderRating_GoodsList");
+                    .HasConstraintName("GoodsOrderRating_ibfk_1");
             });
 
             modelBuilder.Entity<GoodsPhoto>(entity =>
             {
-                entity.Property(e => e.GlId).HasColumnName("GL_Id");
+                entity.HasIndex(e => e.GlId)
+                    .HasName("GL_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.GlId)
+                    .HasColumnName("GL_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ImgUrl).HasMaxLength(512);
 
                 entity.HasOne(d => d.Gl)
                     .WithMany(p => p.GoodsPhoto)
                     .HasForeignKey(d => d.GlId)
-                    .HasConstraintName("FK_GoodsPhoto_GoodsList");
+                    .HasConstraintName("GoodsPhoto_ibfk_1");
             });
 
             modelBuilder.Entity<GoodsQuestion>(entity =>
             {
+                entity.HasIndex(e => e.GlId)
+                    .HasName("GL_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Content).HasMaxLength(50);
 
-                entity.Property(e => e.GlId).HasColumnName("GL_Id");
+                entity.Property(e => e.GlId)
+                    .HasColumnName("GL_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Title).HasMaxLength(50);
 
                 entity.HasOne(d => d.Gl)
                     .WithMany(p => p.GoodsQuestion)
                     .HasForeignKey(d => d.GlId)
-                    .HasConstraintName("FK_GoodsQuestion_GoodsList");
+                    .HasConstraintName("GoodsQuestion_ibfk_1");
             });
 
             modelBuilder.Entity<ImgFile>(entity =>
@@ -561,11 +865,17 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.PathFileName).HasMaxLength(128);
 
-                entity.Property(e => e.ServerId).HasColumnName("Server_Id");
+                entity.Property(e => e.ServerId)
+                    .HasColumnName("Server_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ImgServer>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Account).HasMaxLength(50);
 
                 entity.Property(e => e.Password).HasMaxLength(50);
@@ -575,25 +885,45 @@ namespace Gomo.CC.Model
                 entity.Property(e => e.ServerIp)
                     .HasColumnName("ServerIP")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.Status).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<MessageNotify>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasMaxLength(256);
 
-                entity.Property(e => e.DestId).HasColumnName("Dest_Id");
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
 
-                entity.Property(e => e.ExpTime).HasColumnType("date");
+                entity.Property(e => e.DestId)
+                    .HasColumnName("Dest_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.MesTypeId).HasColumnName("MesType_Id");
+                entity.Property(e => e.ExpTime).HasColumnType("datetime");
 
-                entity.Property(e => e.ReservationId).HasColumnName("Reservation_Id");
+                entity.Property(e => e.IsRead).HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.SendId).HasColumnName("Send_Id");
+                entity.Property(e => e.IsSend).HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.SubTime).HasColumnType("date");
+                entity.Property(e => e.MesTypeId)
+                    .HasColumnName("MesType_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.ReservationId)
+                    .HasColumnName("Reservation_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SendId)
+                    .HasColumnName("Send_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SubTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Url)
                     .IsRequired()
@@ -602,17 +932,35 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<MessageRecord>(entity =>
             {
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.MediaType).HasColumnType("int(11)");
 
                 entity.Property(e => e.MessageContent).HasMaxLength(50);
 
+                entity.Property(e => e.MessageType).HasColumnType("int(11)");
+
                 entity.Property(e => e.RecordDate).HasColumnType("datetime");
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Success).HasColumnType("tinyint(1)");
             });
 
             modelBuilder.Entity<MessageType>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.MessageEnum).HasMaxLength(32);
 
                 entity.Property(e => e.MessageName).HasMaxLength(50);
@@ -620,29 +968,54 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<OrderInfo>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Content).HasMaxLength(64);
+
+                entity.Property(e => e.UserInfoId).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<QuestionList>(entity =>
             {
-                entity.Property(e => e.AccountId).HasColumnName("Account_Id");
+                entity.HasIndex(e => e.FaqcId)
+                    .HasName("FAQC_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AccountId)
+                    .HasColumnName("Account_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
+                entity.Property(e => e.Answer).HasColumnType("int(11)");
+
                 entity.Property(e => e.Content).HasMaxLength(50);
 
-                entity.Property(e => e.FaqcId).HasColumnName("FAQC_Id");
+                entity.Property(e => e.FaqcId)
+                    .HasColumnName("FAQC_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Role).HasColumnType("int(11)");
 
                 entity.Property(e => e.Title).HasMaxLength(50);
 
                 entity.HasOne(d => d.Faqc)
                     .WithMany(p => p.QuestionList)
                     .HasForeignKey(d => d.FaqcId)
-                    .HasConstraintName("FK_QuestionList_FAQCategory");
+                    .HasConstraintName("QuestionList_ibfk_1");
             });
 
             modelBuilder.Entity<RepairConsumerProfile>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Address1).HasMaxLength(50);
 
                 entity.Property(e => e.Address2).HasMaxLength(50);
@@ -651,7 +1024,9 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Birthday).HasColumnType("datetime");
 
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Cellphone).HasMaxLength(50);
 
@@ -661,7 +1036,11 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
-                entity.Property(e => e.ConsumerProfileId).HasColumnName("ConsumerProfile_Id");
+                entity.Property(e => e.ConsumerProfileId)
+                    .HasColumnName("ConsumerProfile_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.ConsumerType).HasColumnType("int(11)");
 
                 entity.Property(e => e.Discount).HasMaxLength(50);
 
@@ -673,27 +1052,43 @@ namespace Gomo.CC.Model
                     .HasColumnName("FBUrl")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Gender).HasColumnType("int(11)");
+
                 entity.Property(e => e.LineId)
                     .HasColumnName("LineID")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.PayTypeAccount).HasColumnName("PayType_Account");
+                entity.Property(e => e.PayTypeAccount)
+                    .HasColumnName("PayType_Account")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeCash).HasColumnName("PayType_Cash");
+                entity.Property(e => e.PayTypeCash)
+                    .HasColumnName("PayType_Cash")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeCheck).HasColumnName("PayType_Check");
+                entity.Property(e => e.PayTypeCheck)
+                    .HasColumnName("PayType_Check")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeCredit).HasColumnName("PayType_Credit");
+                entity.Property(e => e.PayTypeCredit)
+                    .HasColumnName("PayType_Credit")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeDebit).HasColumnName("PayType_Debit");
+                entity.Property(e => e.PayTypeDebit)
+                    .HasColumnName("PayType_Debit")
+                    .HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.PayTypeMasterCard).HasColumnName("PayType_MasterCard");
+                entity.Property(e => e.PayTypeMasterCard)
+                    .HasColumnName("PayType_MasterCard")
+                    .HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.Quota).HasMaxLength(50);
 
                 entity.Property(e => e.Referralentry).HasMaxLength(50);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Sms)
                     .HasColumnName("SMS")
@@ -710,6 +1105,13 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<RepairConsumerVehicle>(entity =>
             {
+                entity.HasIndex(e => e.RcpId)
+                    .HasName("RCP_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Color).HasMaxLength(50);
 
                 entity.Property(e => e.DateOfManufcture).HasColumnType("datetime");
@@ -726,25 +1128,41 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.NextMaintainMileage).HasMaxLength(50);
 
-                entity.Property(e => e.RcpId).HasColumnName("RCP_Id");
+                entity.Property(e => e.OnChange).HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.VcId).HasColumnName("VC_Id");
+                entity.Property(e => e.RcpId)
+                    .HasColumnName("RCP_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.VmId).HasColumnName("VM_Id");
+                entity.Property(e => e.VcId)
+                    .HasColumnName("VC_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.VtId).HasColumnName("VT_Id");
+                entity.Property(e => e.VmId)
+                    .HasColumnName("VM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.VtId)
+                    .HasColumnName("VT_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Year).HasMaxLength(50);
 
                 entity.HasOne(d => d.Rcp)
                     .WithMany(p => p.RepairConsumerVehicle)
                     .HasForeignKey(d => d.RcpId)
-                    .HasConstraintName("FK_RepairConsumerVehicle_RepairConsumerProfile");
+                    .HasConstraintName("RepairConsumerVehicle_ibfk_1");
             });
 
             modelBuilder.Entity<RepairShopAccount>(entity =>
             {
-                entity.Property(e => e.AaiId).HasColumnName("AAI_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AaiId)
+                    .HasColumnName("AAI_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.AccountNo).HasMaxLength(50);
 
@@ -754,13 +1172,23 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Password).HasMaxLength(50);
 
+                entity.Property(e => e.Rank).HasColumnType("int(11)");
+
+                entity.Property(e => e.Role).HasColumnType("int(11)");
+
                 entity.Property(e => e.StartDate)
                     .HasColumnName("Start_Date")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.Status).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<RepairShopInfo>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Address).HasMaxLength(50);
 
                 entity.Property(e => e.BusinessTime).HasMaxLength(50);
@@ -800,11 +1228,23 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<RepairShopInventory>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.HasIndex(e => e.PoNo)
+                    .HasName("PO_NO");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
 
                 entity.Property(e => e.ExpireDate)
                     .HasColumnName("Expire_Date")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.PackageUnit).HasColumnType("int(11)");
+
+                entity.Property(e => e.Paid).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.PartName).HasMaxLength(50);
 
@@ -812,31 +1252,50 @@ namespace Gomo.CC.Model
                     .HasColumnName("PartNO")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.PartsTypeIsDefault).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.PoDate)
                     .HasColumnName("PO_date")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.PoNo).HasColumnName("PO_NO");
+                entity.Property(e => e.PoNo)
+                    .HasColumnName("PO_NO")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.PoQty).HasColumnName("PO_Qty");
+                entity.Property(e => e.PoQty)
+                    .HasColumnName("PO_Qty")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SafeQty).HasColumnName("Safe_Qty");
+                entity.Property(e => e.SafeQty)
+                    .HasColumnName("Safe_Qty")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.ShopPartsTypeId).HasColumnName("ShopPartsType_Id");
+                entity.Property(e => e.ShopPartsTypeId)
+                    .HasColumnName("ShopPartsType_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.StockQty).HasColumnName("Stock_Qty");
+                entity.Property(e => e.StockQty)
+                    .HasColumnName("Stock_Qty")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Vendor).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.PoNoNavigation)
                     .WithMany(p => p.RepairShopInventory)
                     .HasForeignKey(d => d.PoNo)
-                    .HasConstraintName("FK_RepairShopInventory_ShopAccountPayable2");
+                    .HasConstraintName("RepairShopInventory_ibfk_1");
             });
 
             modelBuilder.Entity<RepairShopInventoryTransaction>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("bigint(20)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Method)
                     .IsRequired()
@@ -845,54 +1304,90 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.OpPrice)
                     .HasColumnName("op_price")
-                    .HasColumnType("decimal(18, 4)");
+                    .HasColumnType("decimal(18,4)");
 
-                entity.Property(e => e.OpQty).HasColumnName("op_qty");
+                entity.Property(e => e.OpQty)
+                    .HasColumnName("op_qty")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.OpTime).HasColumnName("op_time");
+                entity.Property(e => e.OpTime)
+                    .HasColumnName("op_time")
+                    .HasColumnType("datetime");
 
-                entity.Property(e => e.RefFormId).HasColumnName("ref_form_id");
+                entity.Property(e => e.RefFormId)
+                    .HasColumnName("ref_form_id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.RefFormNote)
                     .HasColumnName("ref_form_note")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.RefFormType)
                     .HasColumnName("ref_form_type")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RepairShopInventoryId).HasColumnName("RepairShopInventory_id");
+                entity.Property(e => e.RepairShopInventoryId)
+                    .HasColumnName("RepairShopInventory_id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<RepairShopLabor>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.Qty).HasDefaultValueSql("((0))");
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.IsDefault).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.LaborType).HasColumnType("int(11)");
+
+                entity.Property(e => e.Qty)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ServiceItems).HasMaxLength(128);
             });
 
             modelBuilder.Entity<RepairShopLaborCategory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.LaborType).HasMaxLength(50);
             });
 
             modelBuilder.Entity<RepairShopLaborDefault>(entity =>
             {
+                entity.HasIndex(e => e.RepairShopLaborCategoryId)
+                    .HasName("RepairShopLaborCategory_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.LaborTypeNo)
                     .HasColumnName("LaborTypeNO")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Qty).HasDefaultValueSql("((0))");
+                entity.Property(e => e.Qty)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'0'");
 
-                entity.Property(e => e.RepairShopLaborCategoryId).HasColumnName("RepairShopLaborCategory_Id");
+                entity.Property(e => e.RepairShopLaborCategoryId)
+                    .HasColumnName("RepairShopLaborCategory_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ServiceItems).HasMaxLength(128);
 
@@ -901,37 +1396,64 @@ namespace Gomo.CC.Model
                 entity.HasOne(d => d.RepairShopLaborCategory)
                     .WithMany(p => p.RepairShopLaborDefault)
                     .HasForeignKey(d => d.RepairShopLaborCategoryId)
-                    .HasConstraintName("FK_RepairShopLaborDefault_RepairShopLaborCategory");
+                    .HasConstraintName("RepairShopLaborDefault_ibfk_1");
             });
 
             modelBuilder.Entity<RepairShopLaborType>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Code).HasMaxLength(50);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
 
-                entity.Property(e => e.RepairShopLaborCategoryId).HasColumnName("RepairShopLaborCategory_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.RepairShopLaborCategoryId)
+                    .HasColumnName("RepairShopLaborCategory_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ServiceItems).HasMaxLength(50);
             });
 
             modelBuilder.Entity<RepairShopPhoto>(entity =>
             {
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DeleteStatus).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ServiceImgUrl).HasMaxLength(512);
             });
 
             modelBuilder.Entity<RepairShopRating>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.ModifyDate).HasColumnType("datetime");
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<RepairShopSupplier>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Address1).HasMaxLength(50);
 
@@ -941,13 +1463,21 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Contact).HasMaxLength(50);
 
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
                 entity.Property(e => e.Email).HasMaxLength(50);
 
-                entity.Property(e => e.Paymentterm).HasColumnName("paymentterm");
+                entity.Property(e => e.Paymentterm)
+                    .HasColumnName("paymentterm")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.ShopPartsTypeId).HasColumnName("ShopPartsType_Id");
+                entity.Property(e => e.ShopPartsTypeId)
+                    .HasColumnName("ShopPartsType_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.SupplierName).HasMaxLength(50);
 
@@ -964,158 +1494,331 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<RepairShopUserInfo>(entity =>
             {
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReplyList>(entity =>
             {
+                entity.HasIndex(e => e.QlId)
+                    .HasName("QL_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Content).HasMaxLength(50);
 
-                entity.Property(e => e.QlId).HasColumnName("QL_Id");
+                entity.Property(e => e.QlId)
+                    .HasColumnName("QL_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SmaId).HasColumnName("SMA_Id");
+                entity.Property(e => e.SmaId)
+                    .HasColumnName("SMA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Ql)
                     .WithMany(p => p.ReplyList)
                     .HasForeignKey(d => d.QlId)
-                    .HasConstraintName("FK_ReplyList_QuestionList");
+                    .HasConstraintName("ReplyList_ibfk_1");
             });
 
             modelBuilder.Entity<ReportCustCar>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("int(11)");
+
                 entity.Property(e => e.CarName).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
+
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
 
-                entity.Property(e => e.LaborAmt).HasColumnName("Labor_Amt");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.HourPay).HasColumnType("int(11)");
+
+                entity.Property(e => e.LaborAmt)
+                    .HasColumnName("Labor_Amt")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.PartAmt).HasColumnName("Part_Amt");
+                entity.Property(e => e.PartAmt)
+                    .HasColumnName("Part_Amt")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RswoId).HasColumnName("RSWO_Id");
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.RswoId)
+                    .HasColumnName("RSWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Salary).HasColumnType("int(11)");
 
                 entity.Property(e => e.StaffName).HasMaxLength(50);
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ReportCustomer>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("int(11)");
+
                 entity.Property(e => e.CarName).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
+
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
+
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.HourPay).HasColumnType("int(11)");
 
                 entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
 
-                entity.Property(e => e.LaborAmt).HasColumnName("Labor_Amt");
+                entity.Property(e => e.LaborAmt)
+                    .HasColumnName("Labor_Amt")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.PartAmt).HasColumnName("Part_Amt");
+                entity.Property(e => e.PartAmt)
+                    .HasColumnName("Part_Amt")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RswoId).HasColumnName("RSWO_Id");
+                entity.Property(e => e.PaymentType).HasColumnType("int(11)");
+
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.RswoId)
+                    .HasColumnName("RSWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Salary).HasColumnType("int(11)");
 
                 entity.Property(e => e.StaffName).HasMaxLength(50);
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ReportCustOther>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("int(11)");
+
                 entity.Property(e => e.CarName).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
+
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
 
-                entity.Property(e => e.LaborAmt).HasColumnName("Labor_Amt");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.HourPay).HasColumnType("int(11)");
+
+                entity.Property(e => e.LaborAmt)
+                    .HasColumnName("Labor_Amt")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.PartAmt).HasColumnName("Part_Amt");
+                entity.Property(e => e.PartAmt)
+                    .HasColumnName("Part_Amt")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RswoId).HasColumnName("RSWO_Id");
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.RswoId)
+                    .HasColumnName("RSWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Salary).HasColumnType("int(11)");
 
                 entity.Property(e => e.StaffName).HasMaxLength(50);
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ReportCustProd>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("int(11)");
+
                 entity.Property(e => e.CarName).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
+
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
 
-                entity.Property(e => e.LaborAmt).HasColumnName("Labor_Amt");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.HourPay).HasColumnType("int(11)");
+
+                entity.Property(e => e.LaborAmt)
+                    .HasColumnName("Labor_Amt")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.PartAmt).HasColumnName("Part_Amt");
+                entity.Property(e => e.PartAmt)
+                    .HasColumnName("Part_Amt")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RswoId).HasColumnName("RSWO_Id");
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.RswoId)
+                    .HasColumnName("RSWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Salary).HasColumnType("int(11)");
 
                 entity.Property(e => e.StaffName).HasMaxLength(50);
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ReportCustSale>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("int(11)");
+
                 entity.Property(e => e.CarName).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
+
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
 
-                entity.Property(e => e.LaborAmt).HasColumnName("Labor_Amt");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.HourPay).HasColumnType("int(11)");
+
+                entity.Property(e => e.LaborAmt)
+                    .HasColumnName("Labor_Amt")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.PartAmt).HasColumnName("Part_Amt");
+                entity.Property(e => e.PartAmt)
+                    .HasColumnName("Part_Amt")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RswoId).HasColumnName("RSWO_Id");
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.RswoId)
+                    .HasColumnName("RSWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Salary).HasColumnType("int(11)");
 
                 entity.Property(e => e.StaffName).HasMaxLength(50);
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ReportCustStaff>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("int(11)");
+
                 entity.Property(e => e.CarName).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
+
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
 
-                entity.Property(e => e.LaborAmt).HasColumnName("Labor_Amt");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.HourPay).HasColumnType("int(11)");
+
+                entity.Property(e => e.LaborAmt)
+                    .HasColumnName("Labor_Amt")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.PartAmt).HasColumnName("Part_Amt");
+                entity.Property(e => e.PartAmt)
+                    .HasColumnName("Part_Amt")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RswoId).HasColumnName("RSWO_Id");
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.RswoId)
+                    .HasColumnName("RSWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Salary).HasColumnType("int(11)");
 
                 entity.Property(e => e.StaffName).HasMaxLength(50);
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ReportInvRecv>(entity =>
             {
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Balance).HasColumnType("int(11)");
+
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ConsumerName).HasMaxLength(50);
 
@@ -1123,106 +1826,339 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
 
-                entity.Property(e => e.RswoId).HasColumnName("RSWO_Id");
+                entity.Property(e => e.PaymentType).HasColumnType("int(11)");
+
+                entity.Property(e => e.RswoId)
+                    .HasColumnName("RSWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ReportOrderCar>(entity =>
             {
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
+
+                entity.Property(e => e.Sell).HasColumnType("int(11)");
+
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
+
+                entity.Property(e => e.Total).HasColumnType("int(11)");
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReportOrderDetail>(entity =>
             {
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
+
+                entity.Property(e => e.Sell).HasColumnType("int(11)");
+
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
+
+                entity.Property(e => e.Total).HasColumnType("int(11)");
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReportOrderOther>(entity =>
             {
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
+
+                entity.Property(e => e.Sell).HasColumnType("int(11)");
+
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
+
+                entity.Property(e => e.Total).HasColumnType("int(11)");
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReportOrderProd>(entity =>
             {
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
+
+                entity.Property(e => e.Sell).HasColumnType("int(11)");
+
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
+
+                entity.Property(e => e.Total).HasColumnType("int(11)");
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReportOrderSale>(entity =>
             {
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
+
+                entity.Property(e => e.Sell).HasColumnType("int(11)");
+
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
+
+                entity.Property(e => e.Total).HasColumnType("int(11)");
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReportOrderStaff>(entity =>
             {
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
+
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
+
+                entity.Property(e => e.Sell).HasColumnType("int(11)");
+
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
+
+                entity.Property(e => e.Total).HasColumnType("int(11)");
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
+            });
+
+            modelBuilder.Entity<ReportOverall>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.PayAmount).HasColumnType("int(11)");
+
+                entity.Property(e => e.ServiceCount).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReportPart>(entity =>
             {
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Cost).HasColumnType("int(11)");
+
+                entity.Property(e => e.Disc).HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.PartName).HasMaxLength(50);
 
+                entity.Property(e => e.PartTypeId).HasColumnType("int(11)");
+
                 entity.Property(e => e.PartTypeName).HasMaxLength(50);
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.Profit).HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.Qty).HasColumnType("int(11)");
+
+                entity.Property(e => e.Sell).HasColumnType("int(11)");
+
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Tax).HasColumnType("int(11)");
+
+                entity.Property(e => e.Total).HasColumnType("int(11)");
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ReportSumary>(entity =>
             {
-                entity.Property(e => e.ReportId).HasColumnName("Report_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Amount).HasColumnType("int(11)");
+
+                entity.Property(e => e.ReportId)
+                    .HasColumnName("Report_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<Reservation>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Cellphone).HasMaxLength(50);
 
+                entity.Property(e => e.Claim).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.Courtesy).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.CustomerName).HasMaxLength(50);
+
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
 
                 entity.Property(e => e.Gender)
                     .HasColumnName("gender")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Insurance).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
+
+                entity.Property(e => e.Maintenance).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.Notes).HasMaxLength(100);
 
-                entity.Property(e => e.Pdi).HasColumnName("PDI");
+                entity.Property(e => e.Overhaul).HasColumnType("tinyint(1)");
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.Pdi)
+                    .HasColumnName("PDI")
+                    .HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.ReserDateTime)
                     .HasColumnName("Reser_DateTime")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.Towing).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Vatnumber)
                     .HasColumnName("VATNumber")
@@ -1231,6 +2167,12 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<RoleInfo>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
                 entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.RoleAuthorize).HasMaxLength(50);
@@ -1244,7 +2186,16 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<ShopAccountPayable>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.HasIndex(e => e.RsaId)
+                    .HasName("RSA_Id");
+
+                entity.HasIndex(e => e.RssId)
+                    .HasName("RSS_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Barcode).HasMaxLength(50);
 
@@ -1256,93 +2207,154 @@ namespace Gomo.CC.Model
                     .HasColumnName("PO_NO")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.RssId).HasColumnName("RSS_Id");
+                entity.Property(e => e.RssId)
+                    .HasColumnName("RSS_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Rsa)
                     .WithMany(p => p.ShopAccountPayable)
                     .HasForeignKey(d => d.RsaId)
-                    .HasConstraintName("FK_ShopAccountPayable_RepairShopAccount");
+                    .HasConstraintName("ShopAccountPayable_ibfk_1");
 
                 entity.HasOne(d => d.Rss)
                     .WithMany(p => p.ShopAccountPayable)
                     .HasForeignKey(d => d.RssId)
-                    .HasConstraintName("FK_ShopAccountPayable_RepairShopSupplier");
+                    .HasConstraintName("ShopAccountPayable_ibfk_2");
             });
 
             modelBuilder.Entity<ShopPackageDetail>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.HasIndex(e => e.ShopPackageMainId)
+                    .HasName("ShopPackageMain_Id");
 
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.ShopPackageMainId).HasColumnName("ShopPackageMain_Id");
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.GoodsType).HasColumnType("int(11)");
+
+                entity.Property(e => e.ShopPackageMainId)
+                    .HasColumnName("ShopPackageMain_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.ShopPackageMain)
                     .WithMany(p => p.ShopPackageDetail)
                     .HasForeignKey(d => d.ShopPackageMainId)
-                    .HasConstraintName("FK_ShopPackageDetail_ShopPackageMain");
+                    .HasConstraintName("ShopPackageDetail_ibfk_1");
             });
 
             modelBuilder.Entity<ShopPackageMain>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
 
                 entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.PackageName).HasMaxLength(50);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ShopPartsType>(entity =>
             {
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Code).HasMaxLength(50);
 
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
+                entity.Property(e => e.Expireterm).HasColumnType("int(11)");
+
+                entity.Property(e => e.Mileage).HasColumnType("int(11)");
+
                 entity.Property(e => e.PartsName).HasMaxLength(128);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.ShopPartsTypeCategoryId).HasColumnName("ShopPartsTypeCategory_Id");
+                entity.Property(e => e.ShopPartsTypeCategoryId)
+                    .HasColumnName("ShopPartsTypeCategory_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ShopPartsTypeCategory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.PartsType).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ShopPartsTypeDefault>(entity =>
             {
+                entity.HasIndex(e => e.ShopPartsTypeCategoryId)
+                    .HasName("ShopPartsTypeCategory_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Expireterm).HasColumnType("int(11)");
+
+                entity.Property(e => e.Mileage).HasColumnType("int(11)");
+
                 entity.Property(e => e.PartsName).HasMaxLength(128);
 
                 entity.Property(e => e.PartsNameEn).HasMaxLength(128);
 
                 entity.Property(e => e.PartsNo).HasMaxLength(50);
 
-                entity.Property(e => e.ShopPartsTypeCategoryId).HasColumnName("ShopPartsTypeCategory_Id");
+                entity.Property(e => e.ShopPartsTypeCategoryId)
+                    .HasColumnName("ShopPartsTypeCategory_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.ShopPartsTypeCategory)
                     .WithMany(p => p.ShopPartsTypeDefault)
                     .HasForeignKey(d => d.ShopPartsTypeCategoryId)
-                    .HasConstraintName("FK_ShopPartsTypeDefault_ShopPartsTypeCategory");
+                    .HasConstraintName("ShopPartsTypeDefault_ibfk_1");
             });
 
             modelBuilder.Entity<ShopStaffProfile>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Address).HasMaxLength(50);
 
                 entity.Property(e => e.Birthday).HasColumnType("datetime");
 
-                entity.Property(e => e.Cellphone).HasColumnType("nchar(20)");
+                entity.Property(e => e.Cellphone).HasColumnType("char(20)");
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
+                entity.Property(e => e.HourSalary).HasColumnType("int(11)");
+
                 entity.Property(e => e.Job).HasMaxLength(50);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.RestDays).HasMaxLength(50);
 
@@ -1350,32 +2362,52 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.StaffName).HasMaxLength(50);
 
-                entity.Property(e => e.Telephone).HasColumnType("nchar(20)");
+                entity.Property(e => e.Telephone).HasColumnType("char(20)");
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkHours).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ShopWorkOrder>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Balance).HasMaxLength(50);
 
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Claim).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.Courtesy).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.CourtesyLicenseplateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.CvId).HasColumnName("CV_Id");
+                entity.Property(e => e.CvId)
+                    .HasColumnName("CV_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.DateIn).HasColumnType("datetime");
 
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
 
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
                 entity.Property(e => e.DiscountAgain)
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("('0')");
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Insurance).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Maintenance).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.MaintenanceAdvice).HasMaxLength(50);
 
@@ -1385,36 +2417,60 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Pdi).HasColumnName("PDI");
+                entity.Property(e => e.Overhaul).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.PaymentType).HasColumnType("int(11)");
+
+                entity.Property(e => e.Pdi)
+                    .HasColumnName("PDI")
+                    .HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.PlannedHours).HasMaxLength(50);
 
                 entity.Property(e => e.RealHours).HasMaxLength(50);
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.TssaId).HasColumnName("TSSA_Id");
+                entity.Property(e => e.Towing).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.TssaId)
+                    .HasColumnName("TSSA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
 
                 entity.Property(e => e.WorkPurpose).HasMaxLength(50);
 
+                entity.Property(e => e.WorkStatus).HasColumnType("int(11)");
+
                 entity.Property(e => e.Wpdescription)
                     .HasColumnName("WPDescription")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.WssaId).HasColumnName("WSSA_Id");
+                entity.Property(e => e.WssaId)
+                    .HasColumnName("WSSA_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ShopWorkOrderHistory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.CarInformation).HasMaxLength(512);
 
                 entity.Property(e => e.Cellphone).HasMaxLength(50);
 
+                entity.Property(e => e.Claim).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.Color).HasMaxLength(50);
 
                 entity.Property(e => e.ConsumerImgUrl).HasMaxLength(512);
+
+                entity.Property(e => e.Courtesy).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.CourtesyLicenseplateNumber).HasMaxLength(50);
 
@@ -1426,7 +2482,11 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Driver).HasMaxLength(50);
 
+                entity.Property(e => e.Insurance).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.LicensePlateNumber).HasMaxLength(50);
+
+                entity.Property(e => e.Maintenance).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.MaintenanceAdvice).HasMaxLength(50);
 
@@ -1434,15 +2494,23 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.MileageOut).HasMaxLength(50);
 
+                entity.Property(e => e.Month).HasColumnType("int(11)");
+
                 entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Pdi).HasColumnName("PDI");
+                entity.Property(e => e.Overhaul).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.Pdi)
+                    .HasColumnName("PDI")
+                    .HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.PlannedHours).HasMaxLength(50);
 
                 entity.Property(e => e.RealHours).HasMaxLength(50);
 
-                entity.Property(e => e.RepairShopInfoId).HasColumnName("RepairShopInfo_Id");
+                entity.Property(e => e.RepairShopInfoId)
+                    .HasColumnName("RepairShopInfo_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Staff).HasMaxLength(50);
 
@@ -1456,6 +2524,8 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.TotalBeforeTax).HasMaxLength(50);
 
+                entity.Property(e => e.Towing).HasColumnType("tinyint(1)");
+
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
 
                 entity.Property(e => e.WorkPurpose).HasMaxLength(50);
@@ -1463,27 +2533,47 @@ namespace Gomo.CC.Model
                 entity.Property(e => e.Wpddescription)
                     .HasColumnName("WPDDescription")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.Year).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<ShopWorkOrderTemp>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Balance).HasMaxLength(50);
 
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Claim).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.Courtesy).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.CourtesyLicenseplateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.CvId).HasColumnName("CV_Id");
+                entity.Property(e => e.CvId)
+                    .HasColumnName("CV_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.DateIn).HasColumnType("datetime");
 
                 entity.Property(e => e.DateOut).HasColumnType("datetime");
 
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
                 entity.Property(e => e.DiscountAgain)
                     .HasMaxLength(50)
-                    .HasDefaultValueSql("('0')");
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Insurance).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Maintenance).HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.MaintenanceAdvice).HasMaxLength(50);
 
@@ -1493,66 +2583,120 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Pdi).HasColumnName("PDI");
+                entity.Property(e => e.Overhaul).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.PaymentType).HasColumnType("int(11)");
+
+                entity.Property(e => e.Pdi)
+                    .HasColumnName("PDI")
+                    .HasColumnType("tinyint(1)");
 
                 entity.Property(e => e.PlannedHours).HasMaxLength(50);
 
                 entity.Property(e => e.RealHours).HasMaxLength(50);
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.TssaId).HasColumnName("TSSA_Id");
+                entity.Property(e => e.Towing).HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.TssaId)
+                    .HasColumnName("TSSA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.WorkOrderNumber).HasMaxLength(50);
 
                 entity.Property(e => e.WorkPurpose).HasMaxLength(50);
 
+                entity.Property(e => e.WorkStatus).HasColumnType("int(11)");
+
                 entity.Property(e => e.Wpdescription)
                     .HasColumnName("WPDescription")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.WssaId).HasColumnName("WSSA_Id");
+                entity.Property(e => e.WssaId)
+                    .HasColumnName("WSSA_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<TechAskCategory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.CategoryName).HasMaxLength(50);
             });
 
             modelBuilder.Entity<TechAskQuestion>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Answer).HasColumnType("int(11)");
+
+                entity.Property(e => e.AnswerCount).HasColumnType("int(11)");
 
                 entity.Property(e => e.CalculateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Content).HasMaxLength(500);
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SsaId).HasColumnName("SSA_Id");
+                entity.Property(e => e.SsaId)
+                    .HasColumnName("SSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.TacId).HasColumnName("TAC_Id");
+                entity.Property(e => e.TacId)
+                    .HasColumnName("TAC_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Title).HasMaxLength(50);
+
+                entity.Property(e => e.ViewCount).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<TechAskReply>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
-                entity.Property(e => e.AsaId).HasColumnName("ASA_Id");
+                entity.Property(e => e.AsaId)
+                    .HasColumnName("ASA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Content).HasMaxLength(500);
 
-                entity.Property(e => e.RsaId).HasColumnName("RSA_Id");
+                entity.Property(e => e.RsaId)
+                    .HasColumnName("RSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SsaId).HasColumnName("SSA_Id");
+                entity.Property(e => e.SsaId)
+                    .HasColumnName("SSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.TaqId).HasColumnName("TAQ_Id");
+                entity.Property(e => e.Status).HasColumnType("int(11)");
+
+                entity.Property(e => e.TaqId)
+                    .HasColumnName("TAQ_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<UserGuide>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Adddate).HasColumnType("datetime");
 
                 entity.Property(e => e.ContentUrl).HasMaxLength(50);
@@ -1562,6 +2706,12 @@ namespace Gomo.CC.Model
 
             modelBuilder.Entity<UserInfo>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
                 entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.Pwd)
@@ -1578,63 +2728,105 @@ namespace Gomo.CC.Model
                 entity.Property(e => e.UserId)
                     .IsRequired()
                     .HasColumnName("User_Id")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<UserInfoParent>(entity =>
             {
                 entity.HasKey(e => new { e.UserInfoId, e.ParentId });
+
+                entity.Property(e => e.UserInfoId).HasColumnType("int(11)");
+
+                entity.Property(e => e.ParentId).HasColumnType("int(11)");
+
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<UserInfoRoleInfo>(entity =>
             {
-                entity.Property(e => e.RoleInfoId).HasColumnName("RoleInfo_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.UserInfoId).HasColumnName("UserInfo_Id");
+                entity.Property(e => e.DelFlag).HasColumnType("int(11)");
+
+                entity.Property(e => e.RoleInfoId)
+                    .HasColumnName("RoleInfo_Id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.UserInfoId)
+                    .HasColumnName("UserInfo_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<VehicleCategory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.CarLabel).HasMaxLength(200);
             });
 
             modelBuilder.Entity<VehicleModel>(entity =>
             {
+                entity.HasIndex(e => e.VcId)
+                    .HasName("VC_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.CarModel).HasMaxLength(200);
 
-                entity.Property(e => e.VcId).HasColumnName("VC_Id");
+                entity.Property(e => e.VcId)
+                    .HasColumnName("VC_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Vc)
                     .WithMany(p => p.VehicleModel)
                     .HasForeignKey(d => d.VcId)
-                    .HasConstraintName("FK_VehicleModel_VehicleCategory");
+                    .HasConstraintName("VehicleModel_ibfk_1");
             });
 
             modelBuilder.Entity<VehicleType>(entity =>
             {
+                entity.HasIndex(e => e.VmId)
+                    .HasName("VM_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.CarType).HasMaxLength(200);
 
-                entity.Property(e => e.VmId).HasColumnName("VM_Id");
+                entity.Property(e => e.VmId)
+                    .HasColumnName("VM_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Vm)
                     .WithMany(p => p.VehicleType)
                     .HasForeignKey(d => d.VmId)
-                    .HasConstraintName("FK_VehicleType_VehicleModel");
+                    .HasConstraintName("VehicleType_ibfk_1");
             });
 
             modelBuilder.Entity<WebDriverAccessLog>(entity =>
             {
                 entity.ToTable("web_driver_access_log");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("bigint(20)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.AccessFunctionUrl)
                     .IsRequired()
                     .HasColumnName("access_function_url")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.AccessTime).HasColumnName("access_time");
+                entity.Property(e => e.AccessTime)
+                    .HasColumnName("access_time")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.ClientBrowser)
                     .HasColumnName("client_browser")
@@ -1643,8 +2835,7 @@ namespace Gomo.CC.Model
                 entity.Property(e => e.ClientIp)
                     .IsRequired()
                     .HasColumnName("client_ip")
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
+                    .HasMaxLength(15);
 
                 entity.Property(e => e.ClientUser)
                     .IsRequired()
@@ -1656,21 +2847,28 @@ namespace Gomo.CC.Model
                     .HasColumnName("status")
                     .HasColumnType("char(3)");
 
-                entity.Property(e => e.TimeTaken).HasColumnName("time_taken");
+                entity.Property(e => e.TimeTaken)
+                    .HasColumnName("time_taken")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<WebTwshopAccessLog>(entity =>
             {
                 entity.ToTable("web_twshop_access_log");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("bigint(20)")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.AccessFunctionUrl)
                     .IsRequired()
                     .HasColumnName("access_function_url")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.AccessTime).HasColumnName("access_time");
+                entity.Property(e => e.AccessTime)
+                    .HasColumnName("access_time")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.ClientBrowser)
                     .HasColumnName("client_browser")
@@ -1679,8 +2877,7 @@ namespace Gomo.CC.Model
                 entity.Property(e => e.ClientIp)
                     .IsRequired()
                     .HasColumnName("client_ip")
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
+                    .HasMaxLength(15);
 
                 entity.Property(e => e.ClientUser)
                     .IsRequired()
@@ -1692,58 +2889,97 @@ namespace Gomo.CC.Model
                     .HasColumnName("status")
                     .HasColumnType("char(3)");
 
-                entity.Property(e => e.TimeTaken).HasColumnName("time_taken");
+                entity.Property(e => e.TimeTaken)
+                    .HasColumnName("time_taken")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<WorkOrderAsk>(entity =>
             {
-                entity.Property(e => e.CaId).HasColumnName("CA_Id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CaId)
+                    .HasColumnName("CA_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Content).HasMaxLength(256);
 
                 entity.Property(e => e.DateTime).HasColumnType("datetime");
 
-                entity.Property(e => e.ImgUrl).HasColumnType("nchar(50)");
+                entity.Property(e => e.ImgUrl).HasColumnType("char(50)");
 
-                entity.Property(e => e.SsaId).HasColumnName("SSA_Id");
+                entity.Property(e => e.SsaId)
+                    .HasColumnName("SSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SwotId).HasColumnName("SWOT_Id");
+                entity.Property(e => e.SwotId)
+                    .HasColumnName("SWOT_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<WorkOrderDetail>(entity =>
             {
+                entity.HasIndex(e => e.SwoId)
+                    .HasName("SWO_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Code).HasColumnType("int(11)");
+
                 entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.Disc).HasMaxLength(50);
 
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Qty).HasMaxLength(50);
 
                 entity.Property(e => e.Sell).HasMaxLength(50);
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SsaId).HasColumnName("SSA_Id");
+                entity.Property(e => e.SsaId)
+                    .HasColumnName("SSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Tax).HasMaxLength(50);
 
                 entity.Property(e => e.Total).HasMaxLength(50);
 
-                entity.Property(e => e.WodId).HasColumnName("WOD_Id");
+                entity.Property(e => e.Type).HasColumnType("int(11)");
+
+                entity.Property(e => e.WodId)
+                    .HasColumnName("WOD_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Swo)
                     .WithMany(p => p.WorkOrderDetail)
                     .HasForeignKey(d => d.SwoId)
-                    .HasConstraintName("FK_WorkOrderDetail_ShopWorkOrder2");
+                    .HasConstraintName("WorkOrderDetail_ibfk_1");
             });
 
             modelBuilder.Entity<WorkOrderDetailHistory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.Disc).HasMaxLength(50);
@@ -1754,86 +2990,144 @@ namespace Gomo.CC.Model
 
                 entity.Property(e => e.Sell).HasMaxLength(50);
 
-                entity.Property(e => e.ShopWorkOrderHistoryId).HasColumnName("ShopWorkOrderHistory_Id");
+                entity.Property(e => e.ShopWorkOrderHistoryId)
+                    .HasColumnName("ShopWorkOrderHistory_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Tax).HasMaxLength(50);
 
                 entity.Property(e => e.Technician).HasMaxLength(50);
 
                 entity.Property(e => e.Total).HasMaxLength(50);
+
+                entity.Property(e => e.Type).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<WorkOrderDetailTemp>(entity =>
             {
+                entity.HasIndex(e => e.SwoId)
+                    .HasName("SWO_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Code).HasColumnType("int(11)");
+
                 entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.Disc).HasMaxLength(50);
 
-                entity.Property(e => e.GoodsId).HasColumnName("Goods_Id");
+                entity.Property(e => e.GoodsId)
+                    .HasColumnName("Goods_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Qty).HasMaxLength(50);
 
                 entity.Property(e => e.Sell).HasMaxLength(50);
 
-                entity.Property(e => e.SpmId).HasColumnName("SPM_Id");
+                entity.Property(e => e.SpmId)
+                    .HasColumnName("SPM_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SsaId).HasColumnName("SSA_Id");
+                entity.Property(e => e.SsaId)
+                    .HasColumnName("SSA_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Tax).HasMaxLength(50);
 
                 entity.Property(e => e.Total).HasMaxLength(50);
 
-                entity.Property(e => e.WodId).HasColumnName("WOD_Id");
+                entity.Property(e => e.Type).HasColumnType("int(11)");
+
+                entity.Property(e => e.WodId)
+                    .HasColumnName("WOD_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Swo)
                     .WithMany(p => p.WorkOrderDetailTemp)
                     .HasForeignKey(d => d.SwoId)
-                    .HasConstraintName("FK_WorkOrderDetailTemp_ShopWorkOrderTemp");
+                    .HasConstraintName("WorkOrderDetailTemp_ibfk_1");
             });
 
             modelBuilder.Entity<WorkOrderPhoto>(entity =>
             {
+                entity.HasIndex(e => e.SwoId)
+                    .HasName("SWO_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.ImgUrl).HasMaxLength(512);
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Swo)
                     .WithMany(p => p.WorkOrderPhoto)
                     .HasForeignKey(d => d.SwoId)
-                    .HasConstraintName("FK_WorkOrderPhoto_ShopWorkOrder");
+                    .HasConstraintName("WorkOrderPhoto_ibfk_1");
             });
 
             modelBuilder.Entity<WorkOrderPhotoHistory>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.ImgUrl).HasMaxLength(512);
 
-                entity.Property(e => e.ShopWorkOrderHistoryId).HasColumnName("ShopWorkOrderHistory_Id");
+                entity.Property(e => e.ShopWorkOrderHistoryId)
+                    .HasColumnName("ShopWorkOrderHistory_Id")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<WorkOrderPhotoTemp>(entity =>
             {
+                entity.HasIndex(e => e.SwoId)
+                    .HasName("SWO_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.ImgUrl).HasMaxLength(512);
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Swo)
                     .WithMany(p => p.WorkOrderPhotoTemp)
                     .HasForeignKey(d => d.SwoId)
-                    .HasConstraintName("FK_WorkOrderPhotoTemp_ShopWorkOrderTemp");
+                    .HasConstraintName("WorkOrderPhotoTemp_ibfk_1");
             });
 
             modelBuilder.Entity<WorkOrderRating>(entity =>
             {
+                entity.HasIndex(e => e.SwoId)
+                    .HasName("SWO_Id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.AddDate).HasColumnType("datetime");
 
-                entity.Property(e => e.SwoId).HasColumnName("SWO_Id");
+                entity.Property(e => e.SwoId)
+                    .HasColumnName("SWO_Id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Swo)
                     .WithMany(p => p.WorkOrderRating)
                     .HasForeignKey(d => d.SwoId)
-                    .HasConstraintName("FK_WorkOrderRating_ShopWorkOrder");
+                    .HasConstraintName("WorkOrderRating_ibfk_1");
             });
         }
     }

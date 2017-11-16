@@ -15,13 +15,13 @@ namespace Gomo.CC.Model
         public string CarInformation { get; set; }
         public string Color { get; set; }
         public string ConsumerImgUrl { get; set; }
-        public bool? Maintenance { get; set; }
-        public bool? Overhaul { get; set; }
-        public bool? Insurance { get; set; }
-        public bool? Claim { get; set; }
-        public bool? Pdi { get; set; }
-        public bool? Courtesy { get; set; }
-        public bool? Towing { get; set; }
+        public sbyte? Maintenance { get; set; }
+        public sbyte? Overhaul { get; set; }
+        public sbyte? Insurance { get; set; }
+        public sbyte? Claim { get; set; }
+        public sbyte? Pdi { get; set; }
+        public sbyte? Courtesy { get; set; }
+        public sbyte? Towing { get; set; }
         public string CourtesyLicenseplateNumber { get; set; }
         public string Technician { get; set; }
         public string Staff { get; set; }

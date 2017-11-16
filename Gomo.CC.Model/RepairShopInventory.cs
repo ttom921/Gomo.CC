@@ -22,9 +22,9 @@ namespace Gomo.CC.Model
         public double? MarKetPrice { get; set; }
         public int? PoNo { get; set; }
         public DateTime? ExpireDate { get; set; }
-        public bool? Paid { get; set; }
+        public sbyte? Paid { get; set; }
         public int? DelFlag { get; set; }
-        public bool? PartsTypeIsDefault { get; set; }
+        public sbyte? PartsTypeIsDefault { get; set; }
 
         public ShopAccountPayable PoNoNavigation { get; set; }
     }

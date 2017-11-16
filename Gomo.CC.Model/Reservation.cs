@@ -14,13 +14,13 @@ namespace Gomo.CC.Model
         public string Gender { get; set; }
         public string Vatnumber { get; set; }
         public string LicensePlateNumber { get; set; }
-        public bool? Maintenance { get; set; }
-        public bool? Overhaul { get; set; }
-        public bool? Insurance { get; set; }
-        public bool? Claim { get; set; }
-        public bool? Pdi { get; set; }
-        public bool? Courtesy { get; set; }
-        public bool? Towing { get; set; }
+        public sbyte? Maintenance { get; set; }
+        public sbyte? Overhaul { get; set; }
+        public sbyte? Insurance { get; set; }
+        public sbyte? Claim { get; set; }
+        public sbyte? Pdi { get; set; }
+        public sbyte? Courtesy { get; set; }
+        public sbyte? Towing { get; set; }
         public string Notes { get; set; }
         public int? DelFlag { get; set; }
     }
